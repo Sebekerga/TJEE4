@@ -3,15 +3,14 @@ package com.sebekerga.tjee4;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Switch;
 
-public class MainActivity extends AppCompatActivity {
+public class MainSendActivity extends AppCompatActivity {
 
     private final int duration = 1; // seconds
     private final int sampleRate = 8000;
@@ -52,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
                         case '0':
                             freqOfTone = 440;
                             break;
-
                     }
                     genTone();
                     playSound();

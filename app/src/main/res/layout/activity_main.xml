@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.sebekerga.tjee4.MainActivity">
+    tools:context="com.sebekerga.tjee4.MainSendActivity">
 
     <Button
         android:id="@+id/button_send"
@@ -47,8 +47,7 @@
         android:hint="Частота для единицы"
         android:inputType="numberDecimal"
         app:layout_constraintLeft_toLeftOf="@+id/edit_text_fr_zero"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_fr_zero"
-        tools:text="4400" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_fr_zero" />
 
     <EditText
         android:id="@+id/edit_text_fr_zero"
@@ -62,6 +61,16 @@
         android:inputType="numberDecimal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="440" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/editText"
+        app:layout_constraintBottom_toTopOf="@+id/edit_text_fr_zero"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/edit_text_fr_zero"
+        android:hint="Время для одного бита" />
 </android.support.constraint.ConstraintLayout>
