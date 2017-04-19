@@ -101,9 +101,9 @@ public class MainSendActivity extends AppCompatActivity {
         for (int i = 0; i < message_array.length; i += 2) {
             if (message_array[i / 2] == '1') {
                 for (int j = 0; j < sound_one.length; j++)
-                    final_message[(i + 1) * numSamples * 2 + j] = sound_one[j];
+                    final_message[i * numSamples * 2 + j] = sound_one[j];
                 for (int j = 0; j < sound_zero.length; j++)
-                    final_message[i * numSamples * 2 + j] = sound_zero[j];
+                    final_message[(i + 1) * numSamples * 2 + j] = sound_zero[j];
             } else {
                 for (int j = 0; j < sound_zero.length; j++)
                     final_message[i * numSamples * 2 + j] = sound_zero[j];
