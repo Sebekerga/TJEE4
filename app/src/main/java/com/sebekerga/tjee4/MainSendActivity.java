@@ -98,7 +98,7 @@ public class MainSendActivity extends AppCompatActivity {
 
     boolean[] genMessage(String message) {
         char[] message_array = message.toCharArray();
-        boolean[] final_message = new boolean[(message_array.length * numSamples * 2)];
+        boolean[] final_message = new boolean[message_array.length * 2];
 
         for (int i = 0; i < message_array.length; i += 2) {
             if (message_array[i/2] == '1') {
