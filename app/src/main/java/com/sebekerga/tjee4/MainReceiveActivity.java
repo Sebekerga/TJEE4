@@ -12,9 +12,9 @@ public class MainReceiveActivity extends AppCompatActivity {
 
     private static final int RECORDER_SAMPLERATE = 8000;
     private static final int ZERO_UP = 6050;
-    private static final int ZERO_DOWN = 5900;
+    private static final int ZERO_DOWN = 5980;
     private static final int ONE_UP = 4100;
-    private static final int ONE_DOWN = 3900;
+    private static final int ONE_DOWN = 3980;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private AudioRecord recorder = null;
@@ -48,7 +48,7 @@ public class MainReceiveActivity extends AppCompatActivity {
 
     }
 
-    int BufferElements2Rec = 512; // want to play 2048 (2K) since 2 bytes we use only 1024
+    int BufferElements2Rec = 1024; // want to play 2048 (2K) since 2 bytes we use only 1024
     int BytesPerElement = 2; // 2 bytes in 16bit format
 
     private void scanForBits() {
