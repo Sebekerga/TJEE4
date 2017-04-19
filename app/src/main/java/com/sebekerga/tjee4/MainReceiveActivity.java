@@ -65,7 +65,7 @@ public class MainReceiveActivity extends AppCompatActivity {
             } else if (FR < ONE_UP && FR > ONE_DOWN) {
                 message += "1";
             }
-            //tv_message.setText(message);
+            tv_message.setText(message);
             Log.i("FR", Integer.toString(FR));
             Log.i("message", message);
 
