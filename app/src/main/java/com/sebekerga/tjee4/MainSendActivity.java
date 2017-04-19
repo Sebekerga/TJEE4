@@ -56,7 +56,6 @@ public class MainSendActivity extends AppCompatActivity {
                         playSound(sound_one);
                     else
                         playSound(sound_zero);
-
                     try {
                         Thread.sleep(duration); // Ввод в милисек
                     } catch (InterruptedException ex) {
@@ -100,7 +99,7 @@ public class MainSendActivity extends AppCompatActivity {
         char[] message_array = message.toCharArray();
         boolean[] final_message = new boolean[message_array.length * 2];
 
-        for (int i = 0; i < message_array.length; i += 2) {
+        for (int i = 0; i < message_array.length * 2; i += 2) {
             if (message_array[i/2] == '1') {
                 final_message[i] = true;
                 final_message[i + 1] = false;
