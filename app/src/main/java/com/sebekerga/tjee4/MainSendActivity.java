@@ -90,7 +90,7 @@ public class MainSendActivity extends AppCompatActivity {
     void playSound(byte[] sound) {
         final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
                 sampleRate, AudioFormat.CHANNEL_CONFIGURATION_MONO,
-                AudioFormat.ENCODING_PCM_16BIT, numSamples,
+                AudioFormat.ENCODING_PCM_16BIT, sound.length / 2,
                 AudioTrack.MODE_STATIC);
         audioTrack.write(sound, 0, sound.length);
         audioTrack.play();
