@@ -10,7 +10,7 @@ import android.util.Log;
 
 public class MainReceiveActivity extends AppCompatActivity {
 
-    private static final int RECORDER_SAMPLERATE = 44100;
+    private static final int RECORDER_SAMPLERATE = 8000;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private AudioRecord recorder = null;
@@ -52,7 +52,10 @@ public class MainReceiveActivity extends AppCompatActivity {
 
             recorder.read(sData, 0, BufferElements2Rec);
             System.out.println("Short wirting to file" + sData.toString());
-            Log.i("FR", Integer.toString(calculate(RECORDER_SAMPLERATE, sData)));
+            int FR = calculate(RECORDER_SAMPLERATE, sData);
+            if(FR > 0){
+                Log.i("FR", Integer.toString(FR));
+            }
         }
 
     }
