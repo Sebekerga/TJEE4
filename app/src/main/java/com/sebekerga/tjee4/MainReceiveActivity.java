@@ -22,8 +22,8 @@ public class MainReceiveActivity extends AppCompatActivity {
     private AudioRecord recorder = null;
     private Thread recordingThread = null;
     private boolean isRecording = false;
-    TextView tv_message;
-    Button button_reset;
+    TextView tv_message, tv_converted_message;
+    Button button_reset, button_convert;
     String message = "";
 
     @Override
@@ -39,9 +39,18 @@ public class MainReceiveActivity extends AppCompatActivity {
             }
         });
 
+        button_convert = (Button) findViewById(R.id.button_convert);
+        button_convert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tv_converted_message.setText(convertMessage(message));
+            }
+        });
+
         /*int bufferSize = AudioRecord.getMinBufferSize(RECORDER_SAMPLERATE,
                 RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING);*/
         tv_message = (TextView) findViewById(R.id.recieved_message);
+        tv_converted_message = (TextView) findViewById(R.id.converted_message);
         recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 RECORDER_SAMPLERATE, RECORDER_CHANNELS,
                 RECORDER_AUDIO_ENCODING, BufferElements2Rec * BytesPerElement);
@@ -107,5 +116,19 @@ public class MainReceiveActivity extends AppCompatActivity {
                 tv_message.setText(message);
             }
         });
+    }
+
+    String convertMessage(String message){
+        String converted_message = "";
+        char [] message_array = converted_message.toCharArray();
+
+        for(int i = 0; i < message_array.length - 1; i++){
+            if(message_array[i] == '0' && message_array[i + 1] == '1')
+                converted_message += "0";
+            else if(message_array[i] == '1' && message_array[i + 1] == '0')
+                converted_message += "1";
+        }
+
+        return converted_message;
     }
 }
