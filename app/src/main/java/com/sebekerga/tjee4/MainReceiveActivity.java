@@ -68,7 +68,7 @@ public class MainReceiveActivity extends AppCompatActivity {
 
     }
 
-    int BufferElements2Rec = 1024; // want to play 2048 (2K) since 2 bytes we use only 1024
+    int BufferElements2Rec = 256; // want to play 2048 (2K) since 2 bytes we use only 1024
     int BytesPerElement = 2; // 2 bytes in 16bit format
 
     private void scanForBits() {
@@ -78,7 +78,7 @@ public class MainReceiveActivity extends AppCompatActivity {
             // gets the voice output from microphone to byte format
 
             recorder.read(sData, 0, BufferElements2Rec);
-            System.out.println("Short wirting to file" + sData.toString());
+           // System.out.println("Short wirting to file" + sData.toString());
             int FR = calculate(RECORDER_SAMPLERATE * 2, sData);
             if (FR < ZERO_UP && FR > ZERO_DOWN) {
                 message += "0";

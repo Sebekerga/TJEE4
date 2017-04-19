@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:app2=""
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main_recieve"
     android:layout_width="match_parent"
@@ -16,7 +15,6 @@
         android:id="@+id/recieved_message"
         android:textSize="20pt"
         android:text="N"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -27,8 +25,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_width="320dp"
-        app:layout_constraintVertical_bias="0.0"
-        android:layout_height="120dp" />
+        app:layout_constraintVertical_bias="0.042"
+        android:layout_height="120dp"
+        app:layout_constraintTop_toBottomOf="@+id/button_convert" />
 
     <Button
         android:text="новая строка"
@@ -40,7 +39,9 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.501" />
 
     <TextView
         android:text="TextView"
