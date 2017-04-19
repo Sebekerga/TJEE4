@@ -65,7 +65,6 @@ public class MainReceiveActivity extends AppCompatActivity {
             } else if (FR < ONE_UP && FR > ONE_DOWN) {
                 message += "1";
             }
-            tv_message.setText(message);
             Log.i("FR", Integer.toString(FR));
             Log.i("message", message);
 
@@ -88,5 +87,13 @@ public class MainReceiveActivity extends AppCompatActivity {
         float frequency = numCycles / numSecondsRecorded;
 
         return (int) frequency;
+    }
+    private void setText(final TextView text,final String value){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tv_message.setText(message);
+            }
+        });
     }
 }
