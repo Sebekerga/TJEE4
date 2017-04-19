@@ -43,21 +43,25 @@ public class MainSendActivity extends AppCompatActivity {
         button_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                data = edit_text_data.getText().toString();
-
-
-                freq1 = Integer.valueOf(edit_text_fr_one.getText().toString());
-
-
                 freq0 = Integer.valueOf(edit_text_fr_zero.getText().toString());
-
-                playSound(genMessage(data, freq0, freq1));
+                freq1 = Integer.valueOf(edit_text_fr_one.getText().toString());
                 duration = Integer.valueOf(edit_text_data.getText().toString());
+                boolean[] final_massage = genMessage(edit_text_data.getText().toString());
 
-                try {
-                    Thread.sleep(duration * data.length()); // Ввод в милисек
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                byte[] sound_zero = genTone(freq0);
+                byte[] sound_one = genTone(freq1);
+
+                for(int i = 0; i < final_massage.length; i++){
+                    if (final_massage[i])
+                        playSound(sound_one);
+                    else
+                        playSound(sound_zero);
+
+                    try {
+                        Thread.sleep(duration); // Ввод в милисек
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         });
@@ -86,30 +90,23 @@ public class MainSendActivity extends AppCompatActivity {
     void playSound(byte[] sound) {
         final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
                 sampleRate, AudioFormat.CHANNEL_CONFIGURATION_MONO,
-                AudioFormat.ENCODING_PCM_16BIT, sound.length / 2,
+                AudioFormat.ENCODING_PCM_16BIT, numSamples,
                 AudioTrack.MODE_STATIC);
         audioTrack.write(sound, 0, sound.length);
         audioTrack.play();
     }
 
-    byte[] genMessage(String message, double fr0, double fr1) {
+    boolean[] genMessage(String message) {
         char[] message_array = message.toCharArray();
-        byte[] final_message = new byte[(message_array.length * numSamples * 4)];
-
-        byte[] sound_zero = genTone(fr0);
-        byte[] sound_one = genTone(fr1);
+        boolean[] final_message = new boolean[(message_array.length * numSamples * 2)];
 
         for (int i = 0; i < message_array.length; i += 2) {
-            if (message_array[i / 2] == '1') {
-                for (int j = 0; j < sound_one.length; j++)
-                    final_message[i * numSamples * 2 + j] = sound_one[j];
-                for (int j = 0; j < sound_zero.length; j++)
-                    final_message[(i + 1) * numSamples * 2 + j] = sound_zero[j];
+            if (message_array[i/2] == '1') {
+                final_message[i] = true;
+                final_message[i + 1] = false;
             } else {
-                for (int j = 0; j < sound_zero.length; j++)
-                    final_message[i * numSamples * 2 + j] = sound_zero[j];
-                for (int j = 0; j < sound_one.length; j++)
-                    final_message[(i + 1) * numSamples * 2 + j] = sound_one[j];
+                final_message[i] = false;
+                final_message[i + 1] = true;
             }
         }
         return final_message;
