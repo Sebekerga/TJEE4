@@ -53,8 +53,9 @@ public class MainSendActivity extends AppCompatActivity {
 
                 playSound(genMessage(data, freq0, freq1));
                 duration = Integer.valueOf(edit_text_data.getText().toString());
+
                 try {
-                    Thread.sleep(duration); // Ввод в милисек
+                    Thread.sleep(duration * data.length()); // Ввод в милисек
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
