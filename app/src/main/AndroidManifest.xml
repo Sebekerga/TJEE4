@@ -10,14 +10,13 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainSendActivity">
-        </activity>
-        <activity android:name=".ChooseRoleActivity" />
-        <activity android:name=".MainReceiveActivity">
+        <activity android:name=".MainSendActivity"/>
+        <activity android:name=".ChooseRoleActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter></activity>
-    </application>
+        </activity>>
+        <activity android:name=".MainReceiveActivity"/>
 
 </manifest>

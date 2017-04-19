@@ -29,7 +29,7 @@ public class MainReceiveActivity extends AppCompatActivity {
                 RECORDER_SAMPLERATE, RECORDER_CHANNELS,
                 RECORDER_AUDIO_ENCODING, BufferElements2Rec * BytesPerElement);
 
-        recorder.startRecording();
+         recorder.startRecording();
         isRecording = true;
         recordingThread = new Thread(new Runnable() {
             public void run() {
