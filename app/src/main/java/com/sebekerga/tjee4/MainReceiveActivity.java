@@ -6,6 +6,8 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class MainReceiveActivity extends AppCompatActivity {
@@ -21,12 +23,21 @@ public class MainReceiveActivity extends AppCompatActivity {
     private Thread recordingThread = null;
     private boolean isRecording = false;
     TextView tv_message;
+    Button button_reset;
     String message = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_recieve);
+
+        button_reset = (Button) findViewById(R.id.button_reset);
+        button_reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                message += "\n";
+            }
+        });
 
         /*int bufferSize = AudioRecord.getMinBufferSize(RECORDER_SAMPLERATE,
                 RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING);*/
@@ -65,6 +76,7 @@ public class MainReceiveActivity extends AppCompatActivity {
             } else if (FR < ONE_UP && FR > ONE_DOWN) {
                 message += "1";
             }
+            setText();
             Log.i("FR", Integer.toString(FR));
             Log.i("message", message);
 
@@ -88,7 +100,7 @@ public class MainReceiveActivity extends AppCompatActivity {
 
         return (int) frequency;
     }
-    private void setText(final TextView text,final String value){
+    private void setText(){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
