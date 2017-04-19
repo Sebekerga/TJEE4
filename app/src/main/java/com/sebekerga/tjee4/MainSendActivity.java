@@ -12,12 +12,13 @@ import android.widget.EditText;
 
 public class MainSendActivity extends AppCompatActivity {
 
-    private final int duration = 120; // seconds
+    private  int duration = 120; // seconds
     private final int sampleRate = 8000;
     private final int numSamples = duration * sampleRate / 1000;
     private final double sample[] = new double[numSamples];
     private double freqOfTone = 4400; // hz
-
+    private double freq0 = 5000;
+    private double freq1 = 10000;
     private final byte generatedSnd[] = new byte[2 * numSamples];
 
     Handler handler = new Handler();
@@ -43,28 +44,26 @@ public class MainSendActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 data = edit_text_data.getText().toString();
-                for (char i : data.toCharArray()) {
-                    switch (i) {
-                        case '1':
-                            freqOfTone = Integer.valueOf(edit_text_fr_one.getText().toString());;
-                            break;
-                        case '0':
-                            freqOfTone = Integer.valueOf(edit_text_fr_zero.getText().toString());
-                            break;
-                    }
-                    genTone();
-                    playSound();
-                    try {
-                        Thread.sleep(duration); // Ввод в милисек  Integer.valueOf(edit_text_data.getText().toString())
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
+
+
+                freq1 = Integer.valueOf(edit_text_fr_one.getText().toString());
+
+
+                freq0 = Integer.valueOf(edit_text_fr_zero.getText().toString());
+
+                playSound(genMessage(data, freq0, freq1));
+                duration = Integer.valueOf(edit_text_data.getText().toString());
+                try {
+                    Thread.sleep(duration); // Ввод в милисек
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
     }
 
-    void genTone() {
+
+    byte[] genTone(double freqOfTone) {
         // fill out the array
         for (int i = 0; i < numSamples; ++i) {
             sample[i] = Math.sin(2 * Math.PI * i / (sampleRate / freqOfTone));
@@ -78,17 +77,40 @@ public class MainSendActivity extends AppCompatActivity {
             final short val = (short) ((dVal * 32767));
             // in 16 bit wav PCM, first byte is the low order byte
             generatedSnd[idx++] = (byte) (val & 0x00ff);
-            generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
-
+            generatedSnd[idx++] = (byte) ((val & 0xff00) >>>8);
         }
+        return generatedSnd;
     }
 
-    void playSound() {
+    void playSound(byte[] sound) {
         final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
                 sampleRate, AudioFormat.CHANNEL_CONFIGURATION_MONO,
                 AudioFormat.ENCODING_PCM_16BIT, numSamples,
                 AudioTrack.MODE_STATIC);
-        audioTrack.write(generatedSnd, 0, generatedSnd.length);
+        audioTrack.write(sound, 0, sound.length);
         audioTrack.play();
+    }
+
+    byte[] genMessage(String message, double fr0, double fr1) {
+        char[] message_array = message.toCharArray();
+        byte[] final_message = new byte[(message_array.length * numSamples * 4)];
+
+        byte[] sound_zero = genTone(fr0);
+        byte[] sound_one = genTone(fr1);
+
+        for (int i = 0; i < message_array.length; i += 2) {
+            if (message_array[i / 2] == '1') {
+                for (int j = 0; j < sound_one.length; j++)
+                    final_message[(i + 1) * numSamples * 2 + j] = sound_one[j];
+                for (int j = 0; j < sound_zero.length; j++)
+                    final_message[i * numSamples * 2 + j] = sound_zero[j];
+            } else {
+                for (int j = 0; j < sound_zero.length; j++)
+                    final_message[i * numSamples * 2 + j] = sound_zero[j];
+                for (int j = 0; j < sound_one.length; j++)
+                    final_message[(i + 1) * numSamples * 2 + j] = sound_one[j];
+            }
+        }
+        return final_message;
     }
 }
