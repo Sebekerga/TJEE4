@@ -40,12 +40,12 @@ public class MainSendActivity extends AppCompatActivity {
         edit_text_fr_one = (EditText) findViewById(R.id.edit_text_fr_one);
         button_send = (Button) findViewById(R.id.button_send);
 
-        button_send.setOnClickListener(new View.OnClickListener() {
+       /* button_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 freq0 = Integer.valueOf(edit_text_fr_zero.getText().toString());
                 freq1 = Integer.valueOf(edit_text_fr_one.getText().toString());
-                duration = Integer.valueOf(edit_text_data.getText().toString());
+                //duration = Integer.valueOf(edit_text_data.getText().toString());
                 boolean[] final_massage = genMessage(edit_text_data.getText().toString());
 
                 byte[] sound_zero = genTone(freq0);
@@ -61,6 +61,25 @@ public class MainSendActivity extends AppCompatActivity {
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }
+                }
+            }
+        });*/
+        button_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                data = edit_text_data.getText().toString();
+
+
+                freq1 = Integer.valueOf(edit_text_fr_one.getText().toString());
+
+
+                freq0 = Integer.valueOf(edit_text_fr_zero.getText().toString());
+
+                playSound(genMessage(data, freq0, freq1));
+                try {
+                    Thread.sleep(duration); // Ввод в милисек
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
@@ -95,7 +114,29 @@ public class MainSendActivity extends AppCompatActivity {
         audioTrack.play();
     }
 
-    boolean[] genMessage(String message) {
+    byte[] genMessage(String message, double fr0, double fr1) {
+        char[] message_array = message.toCharArray();
+        byte[] final_message = new byte[(message_array.length * numSamples * 4)];
+
+        byte[] sound_zero = genTone(fr0);
+        byte[] sound_one = genTone(fr1);
+
+        for (int i = 0; i < message_array.length; i += 2) {
+            if (message_array[i / 2] == '1') {
+                for (int j = 0; j < sound_one.length; j++)
+                    final_message[i * numSamples * 2 + j] = sound_one[j];
+                for (int j = 0; j < sound_zero.length; j++)
+                    final_message[(i + 1) * numSamples * 2 + j] = sound_zero[j];
+            } else {
+                for (int j = 0; j < sound_zero.length; j++)
+                    final_message[i * numSamples * 2 + j] = sound_zero[j];
+                for (int j = 0; j < sound_one.length; j++)
+                    final_message[(i + 1) * numSamples * 2 + j] = sound_one[j];
+            }
+        }
+        return final_message;
+    }
+   /* boolean[] genMessage(String message) {
         char[] message_array = message.toCharArray();
         boolean[] final_message = new boolean[message_array.length * 2];
 
@@ -109,5 +150,5 @@ public class MainSendActivity extends AppCompatActivity {
             }
         }
         return final_message;
-    }
+    }*/
 }
