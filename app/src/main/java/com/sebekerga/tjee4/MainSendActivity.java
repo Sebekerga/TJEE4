@@ -12,9 +12,9 @@ import android.widget.EditText;
 
 public class MainSendActivity extends AppCompatActivity {
 
-    private final int duration = 1; // seconds
+    private final int duration = 120; // seconds
     private final int sampleRate = 8000;
-    private final int numSamples = duration * sampleRate;
+    private final int numSamples = duration * sampleRate / 1000;
     private final double sample[] = new double[numSamples];
     private double freqOfTone = 4400; // hz
 
@@ -46,16 +46,16 @@ public class MainSendActivity extends AppCompatActivity {
                 for (char i : data.toCharArray()) {
                     switch (i) {
                         case '1':
-                            freqOfTone = 4400;
+                            freqOfTone = Integer.valueOf(edit_text_fr_one.getText().toString());;
                             break;
                         case '0':
-                            freqOfTone = 440;
+                            freqOfTone = Integer.valueOf(edit_text_fr_zero.getText().toString());
                             break;
                     }
                     genTone();
                     playSound();
                     try {
-                        Thread.sleep(duration * 1000);
+                        Thread.sleep(duration); // Ввод в милисек  Integer.valueOf(edit_text_data.getText().toString())
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }
