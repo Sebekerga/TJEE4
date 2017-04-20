@@ -68,6 +68,7 @@ public class MainSendActivity extends AppCompatActivity {
                         ex.printStackTrace();
                     }
                 }
+                playSound(genTone(15000));
             }
         });
         button_send.setOnTouchListener(new View.OnTouchListener() {
