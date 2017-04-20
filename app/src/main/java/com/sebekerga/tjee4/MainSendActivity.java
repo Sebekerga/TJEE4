@@ -55,7 +55,20 @@ public class MainSendActivity extends AppCompatActivity {
                 freq0 = Integer.valueOf(edit_text_fr_zero.getText().toString());
                 freq1 = Integer.valueOf(edit_text_fr_one.getText().toString());
                 //duration = Integer.valueOf(edit_text_data.getText().toString());
-                boolean[] final_massage = genMessage(edit_text_data.getText().toString());
+                String s = edit_text_data.getText().toString(), sn = "";
+                String s0 = "";
+                if (s.length() % 4 != 0) {
+                    int n = 4 - (s.length() % 4);
+                    for (int i = 0; i < n; i++) {
+                        s0 += "0";
+                    }
+                    s = s0 + s;
+                }
+                for (int i = 0; i < s.length(); i += 4) {
+                    sn += hammingGenerate(s.substring(i, i + 4));
+                }
+                tv_coded.setText(sn);
+                boolean[] final_massage = genMessage(sn);
 
                 byte[] sound_zero = genTone(freq0);
                 byte[] sound_one = genTone(freq1);

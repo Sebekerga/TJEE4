@@ -55,7 +55,7 @@ public class MainReceiveActivity extends AppCompatActivity {
                 String s = String.valueOf(tv_converted_message.getText()), sn = "";
                 String s0 = "";
                 if (s.length() % 7 != 0) {
-                    s = s.substring(s.length() - s.length() % 7);
+                    s = s.substring(0, s.length() - s.length() % 7);
                 }
                 for (int i = 0; i < s.length(); i += 7) {
                     sn += hammingCheck(s.substring(i, i + 7));
