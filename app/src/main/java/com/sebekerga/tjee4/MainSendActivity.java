@@ -21,7 +21,7 @@ import java.util.List;
 
 public class MainSendActivity extends AppCompatActivity {
 
-    private int duration = 240; // seconds
+    private int duration = 180; // seconds
     private final int sampleRate = 8000;
     private final int numSamples = duration * sampleRate / 1000;
     private final double sample[] = new double[numSamples];
@@ -139,25 +139,24 @@ public class MainSendActivity extends AppCompatActivity {
 
                 freq0 = Integer.valueOf(edit_text_fr_zero.getText().toString());
                 freq1 = Integer.valueOf(edit_text_fr_one.getText().toString());
-                String s = edit_text_data.getText().toString(), sn = "";
-                String s0 = "";
-                if (s.length() % 4 != 0) {
-                    int n = 4 - (s.length() % 4);
-                    for (int i = 0; i < n; i++) {
-                        s0 += "0";
-                    }
-                    s = s0 + s;
-                }
-                for (int i = 0; i < s.length(); i += 4) {
-                    sn += hammingGenerate(s.substring(i, i + 4));
-                }
-                tv_coded.setText(sn);
-                boolean[] final_massage = genMessage(sn);
+
                 byte[] sound_zero = genTone(freq0);
                 byte[] sound_one = genTone(freq1);
 
                 for (String i : convertFileToBinary(new File(uri.getPath()))) {
-                    boolean[] mes = genMessage(i);
+
+                    String s0 = "", sn = "";
+                    if (i.length() % 4 != 0) {
+                        int n = 4 - (i.length() % 4);
+                        for (int m = 0; m < n; m++) {
+                            s0 += "0";
+                        }
+                        i = s0 + i;
+                    }
+                    for (int j = 0; j < i.length(); j += 4) {
+                        sn += hammingGenerate(i.substring(j, j + 4));
+                    }
+                    boolean[] mes = genMessage(sn);
 
                     for (int j = 0; j < i.length(); j++) {
                         if (mes[j])
@@ -232,8 +231,8 @@ public class MainSendActivity extends AppCompatActivity {
             String binary = "";
 
             int val = i;
-            for (int j = 0; j < 8; i++) {
-                binary += ((val & 128) == 0 ? false : true);
+            for (int j = 0; j < 8; j++) {
+                binary += ((val & 128) == 0 ? "0" : "1");
                 val <<= 1;
             }
 
