@@ -74,7 +74,7 @@ public class MainSendActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(motionEvent.getAction() == MotionEvent.ACTION_UP){
-
+                    audioTrack = null;
                 }
                 return false;
             }
