@@ -174,7 +174,7 @@ public class MainReceiveActivity extends AppCompatActivity {
         for(List<Boolean> i : message_list){
             boolean bit = i.get(0);
             bits_list.add(bit);
-            if(i.size()/sum > 1.5){
+            if(i.size()/sum > 1.3){
                 bits_list.add(bit);
             }
         }
