@@ -14,7 +14,7 @@ public class MainReceiveActivity extends AppCompatActivity {
 
     private static final int RECORDER_SAMPLERATE = 8000;
     private static final int ZERO_UP = 6050;
-    private static final int ZERO_DOWN = 5980;
+    private static final int ZERO_DOWN = 5800;
     private static final int ONE_UP = 4100;
     private static final int ONE_DOWN = 3980;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
@@ -22,8 +22,8 @@ public class MainReceiveActivity extends AppCompatActivity {
     private AudioRecord recorder = null;
     private Thread recordingThread = null;
     private boolean isRecording = false;
-    TextView tv_message, tv_converted_message;
-    Button button_reset, button_convert;
+    TextView tv_message, tv_converted_message, tv_decoded_message;
+    Button button_newline, button_convert, button_clear, button_decode;
     String message = "";
 
     @Override
@@ -31,11 +31,33 @@ public class MainReceiveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_recieve);
 
-        button_reset = (Button) findViewById(R.id.button_reset);
-        button_reset.setOnClickListener(new View.OnClickListener() {
+        tv_decoded_message = (TextView) findViewById(R.id.decoded_message);
+        tv_message = (TextView) findViewById(R.id.scaned_freq);
+        tv_converted_message = (TextView) findViewById(R.id.converted_message);
+
+        button_newline = (Button) findViewById(R.id.newline_button);
+        button_newline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 message += "\n";
+            }
+        });
+        button_newline = (Button) findViewById(R.id.button_decode);
+        button_newline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tv_decoded_message.setText(decodeMessage(
+                        String.valueOf(tv_converted_message.getText())));
+            }
+        });
+        button_clear = (Button) findViewById(R.id.clear_button);
+        button_clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                message = "";
+                tv_message.setText("");
+                tv_decoded_message.setText("");
+                tv_converted_message.setText("");
             }
         });
 
@@ -49,8 +71,6 @@ public class MainReceiveActivity extends AppCompatActivity {
 
         /*int bufferSize = AudioRecord.getMinBufferSize(RECORDER_SAMPLERATE,
                 RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING);*/
-        tv_message = (TextView) findViewById(R.id.recieved_message);
-        tv_converted_message = (TextView) findViewById(R.id.converted_message);
         recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 RECORDER_SAMPLERATE, RECORDER_CHANNELS,
                 RECORDER_AUDIO_ENCODING, BufferElements2Rec * BytesPerElement);
@@ -60,7 +80,6 @@ public class MainReceiveActivity extends AppCompatActivity {
         recordingThread = new Thread(new Runnable() {
             public void run() {
                 scanForBits();
-
             }
         }, "AudioRecorder Thread");
         recordingThread.start();
@@ -68,7 +87,7 @@ public class MainReceiveActivity extends AppCompatActivity {
 
     }
 
-    int BufferElements2Rec = 256; // want to play 2048 (2K) since 2 bytes we use only 1024
+    int BufferElements2Rec = 128; // want to play 2048 (2K) since 2 bytes we use only 1024
     int BytesPerElement = 2; // 2 bytes in 16bit format
 
     private void scanForBits() {
@@ -118,9 +137,16 @@ public class MainReceiveActivity extends AppCompatActivity {
         });
     }
 
-    String convertMessage(String message){
+    String decodeMessage(String message) {
+        String decoded_message = "";
+        char [] message_array = message.toCharArray();
+
+        return decoded_message;
+    }
+
+    String convertMessage(String message) {
         String converted_message = "";
-        char [] message_array = converted_message.toCharArray();
+        char [] message_array = message.toCharArray();
 
         for(int i = 0; i < message_array.length - 1; i++){
             if(message_array[i] == '0' && message_array[i + 1] == '1')
@@ -128,7 +154,6 @@ public class MainReceiveActivity extends AppCompatActivity {
             else if(message_array[i] == '1' && message_array[i + 1] == '0')
                 converted_message += "1";
         }
-
         return converted_message;
     }
 }

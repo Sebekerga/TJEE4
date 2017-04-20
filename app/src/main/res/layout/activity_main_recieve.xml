@@ -11,57 +11,121 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.sebekerga.tjee4.MainReceiveActivity">
 
-    <TextView
-        android:id="@+id/recieved_message"
-        android:textSize="20pt"
-        android:text="N"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
+    <LinearLayout
+        android:layout_width="338dp"
+        android:layout_height="299dp"
+        android:orientation="vertical"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/button_decode"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
+
+        <TextView
+            android:id="@+id/scaned_freq"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:text="Сканированное"
+            android:scrollIndicators="top|end"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="vertical"
+            android:textSize="10pt" />
+
+        <TextView
+            android:id="@+id/converted_message"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Конвертированное"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:scrollIndicators="top|end"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="vertical"
+            android:textSize="10pt"/>
+
+        <TextView
+            android:id="@+id/decoded_message"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Декодированное"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:scrollIndicators="top|end"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="vertical"
+            android:textSize="10pt"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_width="320dp"
-        app:layout_constraintVertical_bias="0.042"
-        android:layout_height="120dp"
-        app:layout_constraintTop_toBottomOf="@+id/button_convert" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:text="новая строка"
+        <Button
+            android:id="@+id/newline_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="новая строка" />
+
+        <Button
+            android:id="@+id/clear_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="Стереть" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button_reset"
-        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.501" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-    <TextView
-        android:text="TextView"
-        android:layout_width="320dp"
-        android:id="@+id/converted_message"
-        android:layout_marginStart="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recieved_message"
-        android:layout_marginTop="8dp"
-        android:layout_height="120dp" />
+        <Button
+            android:id="@+id/button_convert"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:text="преобразовать" />
 
-    <Button
-        android:text="преобразовать"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_convert"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/button_reset"
-        app:layout_constraintRight_toRightOf="@+id/button_reset"
-        app:layout_constraintLeft_toLeftOf="@+id/button_reset" />
+        <Button
+            android:id="@+id/button_decode"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:text="декодировать" />
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
