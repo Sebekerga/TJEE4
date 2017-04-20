@@ -5,6 +5,7 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,9 +15,9 @@ public class MainReceiveActivity extends AppCompatActivity {
 
     private static final int RECORDER_SAMPLERATE = 8000;
     private static final int ZERO_UP = 6050;
-    private static final int ZERO_DOWN = 5800;
+    private static final int ZERO_DOWN = 5700;
     private static final int ONE_UP = 4100;
-    private static final int ONE_DOWN = 3980;
+    private static final int ONE_DOWN = 3700;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private AudioRecord recorder = null;
@@ -34,7 +35,9 @@ public class MainReceiveActivity extends AppCompatActivity {
         tv_decoded_message = (TextView) findViewById(R.id.decoded_message);
         tv_message = (TextView) findViewById(R.id.scaned_freq);
         tv_converted_message = (TextView) findViewById(R.id.converted_message);
-
+        tv_message.setMovementMethod(new ScrollingMovementMethod());
+        tv_converted_message.setMovementMethod(new ScrollingMovementMethod());
+        tv_decoded_message.setMovementMethod(new ScrollingMovementMethod());
         button_newline = (Button) findViewById(R.id.newline_button);
         button_newline.setOnClickListener(new View.OnClickListener() {
             @Override

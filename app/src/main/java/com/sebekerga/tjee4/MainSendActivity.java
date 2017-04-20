@@ -6,9 +6,11 @@ import android.media.AudioTrack;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class MainSendActivity extends AppCompatActivity {
 
@@ -28,12 +30,13 @@ public class MainSendActivity extends AppCompatActivity {
     EditText edit_text_fr_zero;
     EditText edit_text_fr_one;
     Button button_send;
-
+    TextView tv_coded;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_send);
-
+        tv_coded = (TextView) findViewById(R.id.coded_message);
+        tv_coded.setMovementMethod(new ScrollingMovementMethod());
         edit_text_data = (EditText) findViewById(R.id.edit_text_data);
         edit_text_fr_zero = (EditText) findViewById(R.id.edit_text_fr_zero);
         edit_text_fr_one = (EditText) findViewById(R.id.edit_text_fr_one);
