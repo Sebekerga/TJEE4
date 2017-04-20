@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -65,7 +64,21 @@ public class MainSendActivity extends AppCompatActivity {
                 freq0 = Integer.valueOf(edit_text_fr_zero.getText().toString());
                 freq1 = Integer.valueOf(edit_text_fr_one.getText().toString());
                 //duration = Integer.valueOf(edit_text_data.getText().toString());
-                boolean[] final_massage = genMessage(edit_text_data.getText().toString());
+
+                String s = edit_text_data.getText().toString(), sn = "";
+                String s0 = "";
+                if (s.length() % 4 != 0) {
+                    int n = 4 - (s.length() % 4);
+                    for (int i = 0; i < n; i++) {
+                        s0 += "0";
+                    }
+                    s = s0 + s;
+                }
+                for (int i = 0; i < s.length(); i += 4) {
+                    sn += hammingGenerate(s.substring(i, i + 4));
+                }
+                tv_coded.setText(sn);
+                boolean[] final_massage = genMessage(sn);
 
                 byte[] sound_zero = genTone(freq0);
                 byte[] sound_one = genTone(freq1);
@@ -80,6 +93,7 @@ public class MainSendActivity extends AppCompatActivity {
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }
+                    audioTrack.release();
                 }
                 playSound(genTone(15000));
             }
@@ -125,6 +139,20 @@ public class MainSendActivity extends AppCompatActivity {
 
                 freq0 = Integer.valueOf(edit_text_fr_zero.getText().toString());
                 freq1 = Integer.valueOf(edit_text_fr_one.getText().toString());
+                String s = edit_text_data.getText().toString(), sn = "";
+                String s0 = "";
+                if (s.length() % 4 != 0) {
+                    int n = 4 - (s.length() % 4);
+                    for (int i = 0; i < n; i++) {
+                        s0 += "0";
+                    }
+                    s = s0 + s;
+                }
+                for (int i = 0; i < s.length(); i += 4) {
+                    sn += hammingGenerate(s.substring(i, i + 4));
+                }
+                tv_coded.setText(sn);
+                boolean[] final_massage = genMessage(sn);
                 byte[] sound_zero = genTone(freq0);
                 byte[] sound_one = genTone(freq1);
 
@@ -141,6 +169,7 @@ public class MainSendActivity extends AppCompatActivity {
                         } catch (InterruptedException ex) {
                             ex.printStackTrace();
                         }
+                        audioTrack.release();
                     }
                 }
 
@@ -212,5 +241,75 @@ public class MainSendActivity extends AppCompatActivity {
         }
 
         return final_bin;
+    }
+    String hammingGenerate(String number) {
+        String result = "";
+
+        //pa =p1, pb =p2, pc = p3 in Hamming (7,4) Code.
+        char pa = '0', pb = '0', pc = '0';
+
+        if (!evenOneChecker(String.valueOf(number.charAt(0))
+                + String.valueOf(number.charAt(1))
+                + String.valueOf(number.charAt(3)))) {
+            pa = '1';
+        }
+        if (!evenOneChecker(String.valueOf(number.charAt(0))
+                + String.valueOf(number.charAt(2))
+                + String.valueOf(number.charAt(3)))) {
+            pb = '1';
+        }
+        if (!evenOneChecker(String.valueOf(number.charAt(1))
+                + String.valueOf(number.charAt(2))
+                + String.valueOf(number.charAt(3)))) {
+            pc = '1';
+        }
+        result +=pa;
+        result +=pb;
+        result += number.charAt(0);
+        result +=pc;
+        result += number.charAt(1);
+        result += number.charAt(2);
+        result += number.charAt(3);
+        return result;
+    }
+
+    boolean evenOneChecker(String binaryNumber) {
+
+        int oneNumber = 0;
+        for (int i = 0; i < binaryNumber.length(); i++) {
+            if (binaryNumber.charAt(i) == '1') {
+                oneNumber++;
+            }
+        }
+        if (oneNumber % 2 == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    static int getParity(int b[], int power) {
+        int parity = 0;
+        for (int i = 0; i < b.length; i++) {
+            if (b[i] != 2) {
+                // If 'i' doesn't contain an unset value,
+                // We will save that index value in k, increase it by 1,
+                // Then we convert it into binary:
+
+                int k = i + 1;
+                String s = Integer.toBinaryString(k);
+
+                // Now if the bit at the 2^(power) location of the binary value of index is 1,
+                // Then we need to check the value stored at that location.
+                // Checking if that value is 1 or 0, we will calculate the parity value.
+
+                int x = ((Integer.parseInt(s)) / ((int) Math.pow(10, power))) % 10;
+                if (x == 1) {
+                    if (b[i] == 1) {
+                        parity = (parity + 1) % 2;
+                    }
+                }
+            }
+        }
+        return parity;
     }
 }

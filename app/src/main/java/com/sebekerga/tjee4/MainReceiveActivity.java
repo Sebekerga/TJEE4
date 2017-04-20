@@ -19,8 +19,8 @@ public class MainReceiveActivity extends AppCompatActivity {
     private static final int RECORDER_SAMPLERATE = 8000;
     private static final int ZERO_UP = 6050;
     private static final int ZERO_DOWN = 5500;
-    private static final int ONE_UP = 4000;
-    private static final int ONE_DOWN = 3500;
+    private static final int ONE_UP = 4100;
+    private static final int ONE_DOWN = 3600;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private AudioRecord recorder = null;
