@@ -1,5 +1,6 @@
 package com.sebekerga.tjee4;
 
+import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -11,16 +12,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MainSendActivity extends AppCompatActivity {
 
-    private  int duration = 240; // seconds
+    private int duration = 240; // seconds
     private final int sampleRate = 8000;
     private final int numSamples = duration * sampleRate / 1000;
     private final double sample[] = new double[numSamples];
@@ -33,7 +33,11 @@ public class MainSendActivity extends AppCompatActivity {
     EditText edit_text_fr_zero;
     EditText edit_text_fr_one;
     Button button_send;
+    Button button_send_file;
     TextView tv_coded;
+
+    int REQUEST_CODE_PICK_FILE_TO_SAVE_INTERNAL = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +48,7 @@ public class MainSendActivity extends AppCompatActivity {
         edit_text_fr_zero = (EditText) findViewById(R.id.edit_text_fr_zero);
         edit_text_fr_one = (EditText) findViewById(R.id.edit_text_fr_one);
         button_send = (Button) findViewById(R.id.button_send);
+        button_send_file = (Button) findViewById(R.id.button_send_file);
 
         button_send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +67,7 @@ public class MainSendActivity extends AppCompatActivity {
                 byte[] sound_zero = genTone(freq0);
                 byte[] sound_one = genTone(freq1);
 
-                for(int i = 0; i < final_massage.length; i++){
+                for (int i = 0; i < final_massage.length; i++) {
                     if (final_massage[i])
                         playSound(sound_one);
                     else
@@ -79,14 +84,77 @@ public class MainSendActivity extends AppCompatActivity {
         button_send.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction() == MotionEvent.ACTION_UP){
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     audioTrack = null;
                 }
                 return false;
             }
         });
+
+        button_send_file.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent fileExploreIntent = new Intent(
+                        com.sebekerga.tjee4.FileBrowserActivity.INTENT_ACTION_SELECT_DIR,
+                        null,
+                        MainSendActivity.this,
+                        com.sebekerga.tjee4.FileBrowserActivity.class
+                );
+                fileExploreIntent.putExtra(
+                        com.sebekerga.tjee4.FileBrowserActivity.startDirectoryParameter,
+                        "/sdcard"
+                );//Here you can add optional start directory parameter, and file browser will start from that directory.
+                startActivityForResult(
+                        fileExploreIntent,
+                        REQUEST_CODE_PICK_FILE_TO_SAVE_INTERNAL
+                );
+            }
+        });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO Auto-generated method stub
+        if (requestCode == REQUEST_CODE_PICK_FILE_TO_SAVE_INTERNAL) {
+            if (resultCode == this.RESULT_OK) {
+                String newDir = data.getStringExtra(
+                        com.sebekerga.tjee4.FileBrowserActivity.returnDirectoryParameter);
+                playSound(genTone(15000));
+                try {
+                    Thread.sleep(1000); // Ввод в милисек
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+
+                freq0 = Integer.valueOf(edit_text_fr_zero.getText().toString());
+                freq1 = Integer.valueOf(edit_text_fr_one.getText().toString());
+                byte[] sound_zero = genTone(freq0);
+                byte[] sound_one = genTone(freq1);
+
+                for (String i : convertFileToBinary(new File("c:\\temp\\java\\testfile"))) {
+                    boolean[] mes = genMessage(i);
+
+                    for (int j = 0; j < i.length(); j++) {
+                        if (mes[j])
+                            playSound(sound_one);
+                        else
+                            playSound(sound_zero);
+                        try {
+                            Thread.sleep(duration - 60); // Ввод в милисек
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+
+                playSound(genTone(15000));
+
+            } else {
+                Toast.makeText(getApplicationContext(), "Не получилось, может быть ещё раз?", Toast.LENGTH_SHORT);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     byte[] genTone(double freqOfTone) {
         final byte generatedSnd[] = new byte[2 * numSamples];
@@ -103,7 +171,7 @@ public class MainSendActivity extends AppCompatActivity {
             final short val = (short) ((dVal * 32767));
             // in 16 bit wav PCM, first byte is the low order byte
             generatedSnd[idx++] = (byte) (val & 0x00ff);
-            generatedSnd[idx++] = (byte) ((val & 0xff00) >>>8);
+            generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
         }
         return generatedSnd;
     }
@@ -122,7 +190,7 @@ public class MainSendActivity extends AppCompatActivity {
         boolean[] final_message = new boolean[message_array.length * 2];
 
         for (int i = 0; i < message_array.length * 2; i += 2) {
-            if (message_array[i/2] == '1') {
+            if (message_array[i / 2] == '1') {
                 final_message[i] = true;
                 final_message[i + 1] = false;
             } else {
@@ -133,11 +201,11 @@ public class MainSendActivity extends AppCompatActivity {
         return final_message;
     }
 
-    List<String> convertFileToBinary(File file){
+    List<String> convertFileToBinary(File file) {
         List<String> final_bin = new LinkedList<>();
         byte[] file_array = file.toString().getBytes();
 
-        for(byte i : file_array){
+        for (byte i : file_array) {
             String binary = "";
 
             int val = i;
