@@ -4,7 +4,6 @@ import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MotionEvent;
@@ -12,6 +11,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MainSendActivity extends AppCompatActivity {
 
@@ -126,5 +131,24 @@ public class MainSendActivity extends AppCompatActivity {
             }
         }
         return final_message;
+    }
+
+    List<String> convertFileToBinary(File file){
+        List<String> final_bin = new LinkedList<>();
+        byte[] file_array = file.toString().getBytes();
+
+        for(byte i : file_array){
+            String binary = "";
+
+            int val = i;
+            for (int j = 0; j < 8; i++) {
+                binary += ((val & 128) == 0 ? false : true);
+                val <<= 1;
+            }
+
+            final_bin.add(binary);
+        }
+
+        return final_bin;
     }
 }
