@@ -131,7 +131,7 @@ public class MainSendActivity extends AppCompatActivity {
                 byte[] sound_zero = genTone(freq0);
                 byte[] sound_one = genTone(freq1);
 
-                for (String i : convertFileToBinary(new File("c:\\temp\\java\\testfile"))) {
+                for (String i : convertFileToBinary(new File(newDir))) {
                     boolean[] mes = genMessage(i);
 
                     for (int j = 0; j < i.length(); j++) {
