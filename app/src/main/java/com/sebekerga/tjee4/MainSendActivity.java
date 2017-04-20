@@ -13,8 +13,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -73,7 +71,6 @@ public class MainSendActivity extends AppCompatActivity {
                         ex.printStackTrace();
                     }
                 }
-                playSound(genTone(15000));
             }
         });
         button_send.setOnTouchListener(new View.OnTouchListener() {
@@ -131,6 +128,132 @@ public class MainSendActivity extends AppCompatActivity {
             }
         }
         return final_message;
+    }
+
+    /*String toHammingsCode(String message) {
+        int[] coded_message;
+        char[] message_array = message.toCharArray();
+        String debug = "";
+        // We find the number of parity bits required:
+        int i = 0, parity_count = 3, j = 0, k = 0;
+
+        while (i < message_array.length) {
+            // 2^(parity bits) must equal the current position
+            // Current position is (number of bits traversed + number of parity bits + 1).
+            // +1 is needed since array indices start from 0 whereas we need to start from 1.
+            if (Math.pow(2, parity_count) == i + parity_count + 1) {
+                parity_count++;
+            } else {
+                i++;
+            }
+        }
+
+        // Length of 'b' is length of original data (a) + number of parity bits.
+        coded_message = new int[message_array.length + parity_count];
+
+        // Initialize this array with '2' to indicate an 'unset' value in parity bit locations:
+        for (i = 1; i <= coded_message.length; i++) {
+            if (Math.pow(2, j) == i) {
+                // Found a parity bit location.
+                // Adjusting with (-1) to account for array indices starting from 0 instead of 1.
+                coded_message[i - 1] = 2;
+                j++;
+            } else {
+                coded_message[k + j] = message_array[k++];
+            }
+        }
+        for (i = 0; i < parity_count; i++) {
+            // Setting even parity bits at parity bit locations:
+            coded_message[((int) Math.pow(2, i)) - 1] = getParity(coded_message, i);
+        }
+        debug += "";
+        for (int m = 0; m < coded_message.length; m++) {
+            switch (coded_message[m]) {
+                case 48:
+                    debug += "0";
+                    break;
+                case 49:
+                    debug += "1";
+                    break;
+                case 0:
+                    debug += "0";
+                    break;
+            }
+
+        }
+        Log.i("hamming", debug);
+        return debug;
+    }*/
+
+    String hammingGenerate(String number) {
+        String result = "";
+
+        //pa =p1, pb =p2, pc = p3 in Hamming (7,4) Code.
+        char pa = '0', pb = '0', pc = '0';
+
+        if (!evenOneChecker(String.valueOf(number.charAt(0))
+                + String.valueOf(number.charAt(1))
+                + String.valueOf(number.charAt(3)))) {
+            pa = '1';
+        }
+        if (!evenOneChecker(String.valueOf(number.charAt(0))
+                + String.valueOf(number.charAt(2))
+                + String.valueOf(number.charAt(3)))) {
+            pb = '1';
+        }
+        if (!evenOneChecker(String.valueOf(number.charAt(1))
+                + String.valueOf(number.charAt(2))
+                + String.valueOf(number.charAt(3)))) {
+            pc = '1';
+        }
+        result +=pa;
+        result +=pb;
+        result += number.charAt(0);
+        result +=pc;
+        result += number.charAt(1);
+        result += number.charAt(2);
+        result += number.charAt(3);
+        return result;
+    }
+
+    boolean evenOneChecker(String binaryNumber) {
+
+        int oneNumber = 0;
+        for (int i = 0; i < binaryNumber.length(); i++) {
+            if (binaryNumber.charAt(i) == '1') {
+                oneNumber++;
+            }
+        }
+        if (oneNumber % 2 == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    static int getParity(int b[], int power) {
+        int parity = 0;
+        for (int i = 0; i < b.length; i++) {
+            if (b[i] != 2) {
+                // If 'i' doesn't contain an unset value,
+                // We will save that index value in k, increase it by 1,
+                // Then we convert it into binary:
+
+                int k = i + 1;
+                String s = Integer.toBinaryString(k);
+
+                // Now if the bit at the 2^(power) location of the binary value of index is 1,
+                // Then we need to check the value stored at that location.
+                // Checking if that value is 1 or 0, we will calculate the parity value.
+
+                int x = ((Integer.parseInt(s)) / ((int) Math.pow(10, power))) % 10;
+                if (x == 1) {
+                    if (b[i] == 1) {
+                        parity = (parity + 1) % 2;
+                    }
+                }
+            }
+        }
+        return parity;
     }
 
     List<String> convertFileToBinary(File file){
