@@ -1,18 +1,20 @@
 package com.sebekerga.tjee4;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -37,6 +39,7 @@ public class MainSendActivity extends AppCompatActivity {
     TextView tv_coded;
 
     int REQUEST_CODE_PICK_FILE_TO_SAVE_INTERNAL = 0;
+    private static final int READ_REQUEST_CODE = 42;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,31 +97,24 @@ public class MainSendActivity extends AppCompatActivity {
         button_send_file.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent fileExploreIntent = new Intent(
-                        com.sebekerga.tjee4.FileBrowserActivity.INTENT_ACTION_SELECT_DIR,
-                        null,
-                        MainSendActivity.this,
-                        com.sebekerga.tjee4.FileBrowserActivity.class
-                );
-                fileExploreIntent.putExtra(
-                        com.sebekerga.tjee4.FileBrowserActivity.startDirectoryParameter,
-                        "/sdcard"
-                );//Here you can add optional start directory parameter, and file browser will start from that directory.
-                startActivityForResult(
-                        fileExploreIntent,
-                        REQUEST_CODE_PICK_FILE_TO_SAVE_INTERNAL
-                );
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(intent, READ_REQUEST_CODE);
             }
         });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
-        if (requestCode == REQUEST_CODE_PICK_FILE_TO_SAVE_INTERNAL) {
-            if (resultCode == this.RESULT_OK) {
-                String newDir = data.getStringExtra(
-                        com.sebekerga.tjee4.FileBrowserActivity.returnDirectoryParameter);
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            // The document selected by the user won't be returned in the intent.
+            // Instead, a URI to that document will be contained in the return intent
+            // provided to this method as a parameter.
+            // Pull that URI using resultData.getData().
+            Uri uri = null;
+            if (data != null) {
+                uri = data.getData();
+
                 playSound(genTone(15000));
                 try {
                     Thread.sleep(1000); // Ввод в милисек
@@ -131,7 +127,7 @@ public class MainSendActivity extends AppCompatActivity {
                 byte[] sound_zero = genTone(freq0);
                 byte[] sound_one = genTone(freq1);
 
-                for (String i : convertFileToBinary(new File(newDir))) {
+                for (String i : convertFileToBinary(new File(uri.getPath()))) {
                     boolean[] mes = genMessage(i);
 
                     for (int j = 0; j < i.length(); j++) {
@@ -149,11 +145,8 @@ public class MainSendActivity extends AppCompatActivity {
 
                 playSound(genTone(15000));
 
-            } else {
-                Toast.makeText(getApplicationContext(), "Не получилось, может быть ещё раз?", Toast.LENGTH_SHORT);
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     byte[] genTone(double freqOfTone) {
