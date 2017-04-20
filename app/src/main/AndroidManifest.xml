@@ -18,5 +18,14 @@
             </intent-filter></activity>
 
         <activity android:name=".MainReceiveActivity"/>
+        <activity
+            android:name="com.sebekerga.tjee4.FileBrowserActivity"
+            android:label="File browser"
+            android:configChanges="orientation|keyboardHidden">
+            <intent-filter>
+                <action android:name="com.sebekerga.tjee4.SELECT_DIRECTORY_ACTION"></action>
+            </intent-filter>
+
+        </activity>
     </application>
 </manifest>
