@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class MainReceiveActivity extends AppCompatActivity {
 
     private static final int RECORDER_SAMPLERATE = 8000;
@@ -150,13 +153,39 @@ public class MainReceiveActivity extends AppCompatActivity {
     String convertMessage(String message) {
         String converted_message = "";
         char [] message_array = message.toCharArray();
+        List<Boolean> bits_list = new LinkedList<>();
+        List<List<Boolean>> message_list = new LinkedList<>();
 
         for(int i = 0; i < message_array.length - 1; i++){
-            if(message_array[i] == '0' && message_array[i + 1] == '1')
-                converted_message += "0";
-            else if(message_array[i] == '1' && message_array[i + 1] == '0')
-                converted_message += "1";
+            bits_list.add(message_array[i] == '1' ? true : false);
+            if(message_array[i] != message_array[i + 1]){
+                message_list.add(bits_list);
+                bits_list = new LinkedList<>();
+            }
         }
+
+        float sum = 0;
+        for(List<Boolean> i : message_list){
+            sum += i.size();
+        }
+        sum /= message_list.size();
+
+        bits_list = new LinkedList<>();
+        for(List<Boolean> i : message_list){
+            boolean bit = i.get(0);
+            bits_list.add(bit);
+            if(i.size()/sum > 1.5){
+                bits_list.add(bit);
+            }
+        }
+
+        for(int i = 0; i < bits_list.size(); i += 2){
+            if(bits_list.get(i) == true)
+                converted_message += '1';
+            else
+                converted_message += '0';
+        }
+
         return converted_message;
     }
 }
