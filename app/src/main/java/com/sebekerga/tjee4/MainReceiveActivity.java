@@ -16,11 +16,11 @@ import java.util.List;
 
 public class MainReceiveActivity extends AppCompatActivity {
     private static final boolean DEBUG = true;
-    private static final int RECORDER_SAMPLERATE = 8000;
-    private static final int ZERO_UP = 6050;
-    private static final int ZERO_DOWN = 5500;
-    private static final int ONE_UP = 4100;
-    private static final int ONE_DOWN = 3600;
+    private static final int RECORDER_SAMPLERATE = 44100;
+    private static final int ZERO_UP = 11000;
+    private static final int ZERO_DOWN = 9000;
+    private static final int ONE_UP = 14000;//16000;
+    private static final int ONE_DOWN = 11000;//12000;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private AudioRecord recorder = null;
@@ -100,7 +100,7 @@ public class MainReceiveActivity extends AppCompatActivity {
 
     }
 
-    int BufferElements2Rec = 128; // want to play 2048 (2K) since 2 bytes we use only 1024
+    int BufferElements2Rec = 512; // want to play 2048 (2K) since 2 bytes we use only 1024
     int BytesPerElement = 2; // 2 bytes in 16bit format
 
     private void scanForBits() {
@@ -139,7 +139,7 @@ public class MainReceiveActivity extends AppCompatActivity {
         float numCycles = numCrossing / 2;
         float frequency = numCycles / numSecondsRecorded;
 
-        return (int) frequency;
+        return (int) frequency / 2;
     }
 
     private void setText() {
@@ -238,6 +238,8 @@ public class MainReceiveActivity extends AppCompatActivity {
             bits_list.add(bit);
             if (i.size() / sum > 1.3) {
                 bits_list.add(bit);
+            }else if(i.size() / sum < 0.2){
+                bits_list.remove(i);
             }
         }
 

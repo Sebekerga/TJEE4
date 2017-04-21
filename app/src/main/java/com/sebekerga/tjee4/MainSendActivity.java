@@ -22,7 +22,7 @@ import java.util.List;
 public class MainSendActivity extends AppCompatActivity {
 
     private int duration = 180; // seconds
-    private final int sampleRate = 8000;
+    private final int sampleRate = 44100;
     private final int numSamples = duration * sampleRate / 1000;
     private final double sample[] = new double[numSamples];
     private double freq0 = 5000;
@@ -55,12 +55,11 @@ public class MainSendActivity extends AppCompatActivity {
         button_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playSound(genTone(15000));
-                try {
+                /*try {
                     Thread.sleep(1000); // Ввод в милисек
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
-                }
+                }*/
                 freq0 = Integer.valueOf(edit_text_fr_zero.getText().toString());
                 freq1 = Integer.valueOf(edit_text_fr_one.getText().toString());
                 //duration = Integer.valueOf(edit_text_data.getText().toString());
@@ -95,7 +94,6 @@ public class MainSendActivity extends AppCompatActivity {
                     }
                     audioTrack.release();
                 }
-                playSound(genTone(15000));
             }
         });
         button_send.setOnTouchListener(new View.OnTouchListener() {
@@ -130,7 +128,6 @@ public class MainSendActivity extends AppCompatActivity {
             if (data != null) {
                 uri = data.getData();
 
-                playSound(genTone(15000));
                 try {
                     Thread.sleep(1000); // Ввод в милисек
                 } catch (InterruptedException ex) {
@@ -172,7 +169,6 @@ public class MainSendActivity extends AppCompatActivity {
                     }
                 }
 
-                playSound(genTone(15000));
 
             }
         }
