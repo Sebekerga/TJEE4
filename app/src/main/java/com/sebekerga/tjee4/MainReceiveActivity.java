@@ -5,10 +5,13 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.LinkedList;
@@ -17,10 +20,10 @@ import java.util.List;
 public class MainReceiveActivity extends AppCompatActivity {
     private static final boolean DEBUG = true;
     private static final int RECORDER_SAMPLERATE = 44100;
-    private static final int ZERO_UP = 11000;
-    private static final int ZERO_DOWN = 9000;
-    private static final int ONE_UP = 14000;//16000;
-    private static final int ONE_DOWN = 11000;//12000;
+    private static int ZERO_UP = 11000;
+    private static int ZERO_DOWN = 9000;
+    private static int ONE_UP = 13000;//16000;
+    private static int ONE_DOWN = 11000;//12000;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private AudioRecord recorder = null;
@@ -29,11 +32,54 @@ public class MainReceiveActivity extends AppCompatActivity {
     TextView tv_message, tv_converted_message, tv_decoded_message;
     Button button_newline, button_convert, button_clear, button_decode;
     String message = "";
+    EditText editText0, editText1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_recieve);
+
+        editText0 = (EditText) findViewById(R.id.edit_text_fr_one_r);
+        editText1 = (EditText) findViewById(R.id.edit_text_fr_zero_r);
+
+        editText0.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                ZERO_DOWN = Integer.valueOf(editText0.getText().toString()) - 1000;
+                ZERO_UP = Integer.valueOf(editText0.getText().toString()) + 1000;
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        editText1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                ONE_DOWN = Integer.valueOf(editText1.getText().toString()) - 1000;
+                ONE_UP = Integer.valueOf(editText1.getText().toString()) + 1000;
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         tv_decoded_message = (TextView) findViewById(R.id.decoded_message);
         tv_message = (TextView) findViewById(R.id.scaned_freq);
@@ -215,6 +261,18 @@ public class MainReceiveActivity extends AppCompatActivity {
     String convertMessage(String message) {
         String converted_message = "";
         char[] message_array = message.toCharArray();
+        for(int j = 0; j < message_array.length - 2; j++){
+            if(message_array[j] == '1' &&
+                    message_array[j + 1] == '0' &&
+                    message_array[j + 2] == '1')
+                message_array[j + 1] = '1';
+
+            if(message_array[j] == '0' &&
+                    message_array[j + 1] == '1' &&
+                    message_array[j + 2] == '0')
+                message_array[j + 1] = '0';
+        }
+
         List<Boolean> bits_list = new LinkedList<>();
         List<List<Boolean>> message_list = new LinkedList<>();
 
@@ -238,84 +296,15 @@ public class MainReceiveActivity extends AppCompatActivity {
             bits_list.add(bit);
             if (i.size() / sum > 1.3) {
                 bits_list.add(bit);
-            }else if(i.size() / sum < 0.2){
-                bits_list.remove(i);
             }
         }
 
-        for (int i = 0; i < bits_list.size(); i += 2) {
-            if (bits_list.get(i) == true)
+        for (int i = 0; i < bits_list.size(); i += 2)
+            if (bits_list.get(i))
                 converted_message += '1';
             else
                 converted_message += '0';
-        }
 
         return converted_message;
     }
-
-    String decode_and_repair(int recieved_mes[], int parity_count) {
-        // This is the receiver code. It receives a Hamming code in array 'a'.
-        // We also require the number of parity bits added to the original data.
-        // Now it must detect the error and correct it, if any.
-        String repaired = "";
-        int power;
-        // We shall use the value stored in 'power' to find the correct bits to check for parity.
-
-        int parity[] = new int[parity_count];
-        // 'parity' array will store the values of the parity checks.
-
-        String syndrome = new String();
-        // 'syndrome' string will be used to store the integer value of error location.
-
-        for (power = 0; power < parity_count; power++) {
-            // We need to check the parities, the same number of times as the number of parity bits added.
-
-            for (int i = 0; i < recieved_mes.length; i++) {
-                // Extracting the bit from 2^(power):
-
-                int k = i + 1;
-                String s = Integer.toBinaryString(k);
-                int bit = ((Integer.parseInt(s)) / ((int) Math.pow(10, power))) % 10;
-                if (bit == 1) {
-                    if (recieved_mes[i] == 1) {
-                        parity[power] = (parity[power] + 1) % 2;
-                    }
-                }
-            }
-            syndrome = parity[power] + syndrome;
-        }
-        // This gives us the parity check equation values.
-        // Using these values, we will now check if there is a single bit error and then correct it.
-        String debug = "";
-        int error_location = Integer.parseInt(syndrome, 2);
-        if (error_location != 0) {
-            debug += "\nError is at location " + error_location + ".";
-            recieved_mes[error_location - 1] = (recieved_mes[error_location - 1] + 1) % 2;
-            debug += "\nCorrected code is:";
-            for (int i = 0; i < recieved_mes.length; i++) {
-                repaired += recieved_mes[recieved_mes.length - i - 1];
-                debug += recieved_mes[recieved_mes.length - i - 1];
-            }
-
-            debug += "\n";
-        } else {
-            debug += "\nThere is no error in the received data.";
-        }
-
-        // Finally, we shall extract the original data from the received (and corrected) code:
-        debug += "\nOriginal data sent was:";
-        power = parity_count - 1;
-        for (int i = recieved_mes.length; i > 0; i--) {
-            if (Math.pow(2, power) != i) {
-                repaired += recieved_mes[i - 1];
-                debug += recieved_mes[i - 1];
-            } else {
-                power--;
-            }
-        }
-        debug += "\n";
-        Log.i("hamming", debug);
-        return repaired;
-    }
-
 }
